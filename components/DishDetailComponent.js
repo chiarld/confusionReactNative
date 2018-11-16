@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import {View, Text} from 'react-native';
 import { Card } from 'react-native-elements';
+import { DISHES } from '../shared/dishes';
 
 const RenderDish = (props) =>
 {
     const dish = props.dish;
-
     if(dish != null)
     {
         return(
@@ -25,11 +25,27 @@ const RenderDish = (props) =>
     }
 }
 
-const DishDetailComponent = (props) =>
+class DishDetail extends Component
 {
-    return(
-        <RenderDish dish={props.dish}/>
-    );
+    constructor(props)
+    {
+        super(props);
+        this.state = {
+            dishes: DISHES
+        }
+    }
+
+    static navigationOptions = {
+        title: 'Dish Details'
+    }; // specific to this component
+
+    render()
+    {
+        const dishId = this.props.navigation.getParam('dishId', '');
+        return(
+            <RenderDish dish={this.state.dishes[+dishId]}/> // plus casts dishId as a number.
+        );
+    }
 }
 
-export default DishDetailComponent;
+export default DishDetail;
