@@ -12,13 +12,14 @@ const Menu = (props) =>
                 title={item.name}
                 subtitle={item.description}
                 hideChevron={true}
+                onPress={() => props.onPress(item.id)}
                 avatar={require('./images/uthappizza.png')}
           />
         )
     }
 
     return(
-        <FlatList
+        <FlatList style={{margin: 20}}
             data={props.dishes} //iterates through every item in array
             renderItem={renderMenuItem} //renders in provided view
             keyExtractor={item => item.id.toString()} //key for looping
