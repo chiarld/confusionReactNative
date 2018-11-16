@@ -50,6 +50,8 @@ const MainNavigator = createDrawerNavigator({
             drawerLabel: 'Menu'
         } // We use HomeNavigator so we can have navigation options
     }, 
+}, {
+    drawerBackgroundColor: '#D1C4E9'
 })
 
 class Main extends Component 
