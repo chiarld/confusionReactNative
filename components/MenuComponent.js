@@ -27,7 +27,6 @@ class Menu extends Component
                     key={index}
                     title={item.name}
                     subtitle={item.description}
-                    hideChevron={true}
                     onPress={() => navigate('DishDetail', { dishId: item.id})}
                     avatar={require('./images/uthappizza.png')}
             />
