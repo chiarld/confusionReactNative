@@ -3,6 +3,7 @@ import {ScrollView, View, Text, FlatList, Image} from 'react-native';
 import {Card, ListItem} from 'react-native-elements';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
+import { Loading } from './LoadingComponent';
 
 const mapStateToProps = (state) => 
 {
@@ -46,20 +47,45 @@ class About extends Component
                 />
             );
         }
-        return(
-        <ScrollView style={{flex:1}}>
-            <History/>
-            <Card
-                title="Corporate leaders"
-                >
-            <FlatList
-                data={this.props.leaders.leaders} //iterates through every item in array
-                renderItem={renderLeader} //renders in provided view
-                keyExtractor={item => item.id.toString()} //key for looping
-                />
-            </Card>
-        </ScrollView>
-        );
+
+        if (this.props.leaders.isLoading)
+        {
+            return(
+                <ScrollView style={{flex:1}}>
+                    <History/>
+                    <Card title='Corporate Leadership'>
+                        <Loading/>
+                    </Card>
+                </ScrollView>  
+            )
+        }
+        else if(this.props.leaders.errMess)
+        {
+            return(
+                <ScrollView style={{flex:1}}>
+                    <History/>
+                    <Card title='Corporate Leadership'>
+                        <Text>{this.props.leaders.errMess}</Text>
+                    </Card>
+                </ScrollView>
+            )
+        }
+        else{
+            return(
+            <ScrollView style={{flex:1}}>
+                <History/>
+                <Card
+                    title="Corporate leaders"
+                    >
+                <FlatList
+                    data={this.props.leaders.leaders} //iterates through every item in array
+                    renderItem={renderLeader} //renders in provided view
+                    keyExtractor={item => item.id.toString()} //key for looping
+                    />
+                </Card>
+            </ScrollView>
+            );
+        }
     }
 }
 
