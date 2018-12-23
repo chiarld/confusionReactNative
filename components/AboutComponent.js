@@ -1,17 +1,16 @@
 import React, {Component} from 'react';
-import {LEADERS} from '../shared/leaders';
 import {ScrollView, View, Text, FlatList, Image} from 'react-native';
 import {Card, ListItem} from 'react-native-elements';
+import { connect } from 'react-redux';
+import { baseUrl } from '../shared/baseUrl';
+
+const mapStateToProps = (state) => 
+{
+    return {leaders: state.leaders}
+}
 
 class About extends Component
 {
-    constructor(props)
-    {
-        super(props);
-        this.state = {
-            leaders: LEADERS
-        }
-    }
 
     render()
     {
@@ -41,7 +40,7 @@ class About extends Component
                 hideChevron={true}
                 avatar={
                     <View>
-                        <Image style={{height: 50, width: 50, borderRadius:25, margin: 5}} source= {require('./images/alberto.png')}/>
+                        <Image style={{height: 50, width: 50, borderRadius:25, margin: 5}} source= { {uri: baseUrl + item.image}} />
                     </View>
                 }
                 />
@@ -54,7 +53,7 @@ class About extends Component
                 title="Corporate leaders"
                 >
             <FlatList
-                data={this.state.leaders} //iterates through every item in array
+                data={this.props.leaders.leaders} //iterates through every item in array
                 renderItem={renderLeader} //renders in provided view
                 keyExtractor={item => item.id.toString()} //key for looping
                 />
@@ -64,4 +63,4 @@ class About extends Component
     }
 }
 
-export default About;
+export default connect(mapStateToProps)(About);
