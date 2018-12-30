@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Text, View, ScrollView, StyleSheet, Picker, Switch, Button, Modal} from 'react-native';
+import { Text, View, ScrollView, StyleSheet, Picker, Switch, Button, Modal, Alert} from 'react-native';
+import * as Animatable from 'react-native-animatable';
 import { Card } from 'react-native-elements';
 import DatePicker from 'react-native-datepicker';
 
@@ -13,7 +14,7 @@ class Reservation extends Component
             guests: 1,
             smoking: false,
             date: '',
-            showModal: false
+            // showModal: false
         }
     }
 
@@ -25,7 +26,25 @@ class Reservation extends Component
     handleReservation()
     {
         console.log(JSON.stringify(this.state));
-        this.toogleModal();
+        const reservation = 'Number of Guests: ' + this.state.guests + 
+            '\n Smoking? ' + (this.state.smoking ? 'true' : 'false') + 
+            '\n Date and Time: ' + this.state.date;
+        Alert.alert(
+            'Your Reservation OK?',
+            reservation,
+            [
+                {
+                    text: 'Cancel', 
+                    onPress: () => this.resetForm(),
+                    style: 'cancel'
+                },
+                {
+                    text: 'OK',
+                    onPress: () => this.resetForm()
+                }
+            ],
+            {cancelable: false}
+        )
     }
 
     resetForm()
@@ -38,15 +57,16 @@ class Reservation extends Component
         });
     }
 
-    toogleModal()
-    {
-        this.setState({showModal: !this.state.showModal})
-    }
+    // toogleModal()
+    // {
+    //     this.setState({showModal: !this.state.showModal})
+    // }
 
     render()
     {
         return(
             <ScrollView>
+                <Animatable.View animation="zoomIn" duration={2000}>            
                 <View style={styles.formRow}>
                     <Text style={styles.formLabel}>Number of Guests</Text>
                     <Picker
@@ -105,7 +125,7 @@ class Reservation extends Component
                         accessibilityLabel='Learn more about this purple button'
                     />
                 </View>
-                <Modal
+                {/* <Modal
                     animationType={'slide'}
                     transparent={false}
                     visible={this.state.showModal}
@@ -123,7 +143,8 @@ class Reservation extends Component
                             title='Close'
                         />
                     </View>
-                </Modal>
+                </Modal> */}
+                </Animatable.View>
             </ScrollView>
         );
     }
