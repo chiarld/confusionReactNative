@@ -7,7 +7,7 @@ import DishDetail from './DishDetailComponent';
 import Reservation from './ReservationComponent';
 import Favorites from "./FavoriteComponent";
 import Login from './LoginComponent';
-import { View, Image, StyleSheet, ScrollView, Text } from "react-native";
+import { View, Image, StyleSheet, ScrollView, Text, NetInfo, Alert } from "react-native";
 import { createStackNavigator, createDrawerNavigator, DrawerItems, SafeAreaView } from "react-navigation";
 import { Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
@@ -15,7 +15,7 @@ import { fetchDishes, fetchComments, fetchPromos, fetchLeaders} from '../redux/A
 
 const mapStateToProps = (state) =>
 {
-    return{}
+    return{};
 }
 
 const mapDispatchToProps = (dispatch) => ({
@@ -305,6 +305,37 @@ class Main extends Component
         this.props.fetchComments();
         this.props.fetchPromos();
         this.props.fetchLeaders();
+
+        NetInfo.getConnectionInfo()
+            .then((connectionInfo) => {
+                Alert.alert('NetInfo', 'Initial Network Connectivity Type: ' 
+                + connectionInfo.type + ', effectiveType:' 
+                + connectionInfo.effectiveType)
+            })
+
+        NetInfo.addEventListener('connectionChange', this.handleConnectivityChange)
+    }
+
+    handleConnectivityChange = (connectionInfo) =>
+    {
+        switch(connectionInfo.type)
+        {
+            case 'none':
+                Alert.alert('You are now offline!');
+            case 'wifi':
+                Alert.alert('You are now connected to WiFi!');
+            case 'cellular':
+                Alert.alert('You are now connected to cellular!');
+            case 'unknown':
+                Alert.alert('You now have an unknown connection!');
+            default:
+                break;
+        }
+    }
+
+    componentWillUnmount()
+    {
+        NetInfo.removeEventListener('connectionChange', this.handleConnectivityChange);
     }
 
     render()
