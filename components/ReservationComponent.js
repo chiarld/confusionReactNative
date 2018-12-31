@@ -3,6 +3,7 @@ import { Text, View, ScrollView, StyleSheet, Picker, Switch, Button, Modal, Aler
 import * as Animatable from 'react-native-animatable';
 import { Card } from 'react-native-elements';
 import DatePicker from 'react-native-datepicker';
+import { Permissions, Notifications, Constants } from 'expo'; // must ask for permission previous to putting notification
 
 class Reservation extends Component
 {
@@ -40,7 +41,10 @@ class Reservation extends Component
                 },
                 {
                     text: 'OK',
-                    onPress: () => this.resetForm()
+                    onPress: () => {
+                        this.presentLocalNotification(this.state.date);
+                        this.resetForm();
+                    }
                 }
             ],
             {cancelable: false}
@@ -55,6 +59,38 @@ class Reservation extends Component
             date: '',
             showModal: false 
         });
+    }
+
+    async obtainNotificationPermission() {
+        let permission = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+        if (permission.status !== 'granted') {
+            permission = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+            if (permission.status !== 'granted') {
+                Alert.alert('Permission not granted to show notifications');
+            }
+        }
+        Notifications.addListener(this.handleNotification);
+        return permission;
+    }
+
+    async presentLocalNotification(date) {
+        await this.obtainNotificationPermission();
+        Notifications.scheduleLocalNotificationAsync({
+            title: 'Your Reservation',
+            body: 'Reservation for '+ date + ' requested',
+            ios: {
+                sound: true
+            },
+            android: {
+                sound: true,
+                vibrate: true,
+                color: '#512DA8'
+            }
+        }, {time: new Date().getTime() + 10000})
+    }
+
+    handleNotification() {
+        console.log('Listener OK');
     }
 
     // toogleModal()
@@ -123,7 +159,7 @@ class Reservation extends Component
                         color='#512DA8'
                         onPress={() => this.handleReservation()}
                         accessibilityLabel='Learn more about this purple button'
-                    />
+                    /> 
                 </View>
                 {/* <Modal
                     animationType={'slide'}
